@@ -1,0 +1,13 @@
+name: omiX
+title: omiX
+username: szymanskilab
+account: szymanskilab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11375482
+bundleId: 8524267
+url: https://szymanskilab.shinyapps.io/omiX/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: FTIR_combined_test.csv|homo_wild_geno_meta16_log.csv|omics_met.csv|omics_pro.csv|omics_tra.csv|www/logo1.png
