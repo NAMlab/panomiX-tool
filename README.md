@@ -1,13 +1,8 @@
-## Multi-omics Integration Framework- panomiX
-A multi-omics shiny app likely refers to a web application developed using the Shiny framework in the R programming language for the analysis and visualization of multi-omics data. 
-
-Let's break down: Multi-omics refers to the integration and analysis of various biological data types, such as genomics, transcriptomics, proteomics, metabolomics, and other -omics data. Combining these datasets can provide a more comprehensive understanding of biological systems.
-
-Based on this, a "multi-omics shiny app" would likely be a user-friendly interface for exploring, analyzing, and visualizing integrated multi-omics data. Users might be able to upload their datasets, perform various analyses, and visualize results through interactive plots and dashboards. The app could potentially include features such as Data Harmonization, Varaince Estimation, Multi-omics Prediction, Multi-omics Interaction, and other tools commonly used in the analysis of multi-omics data.
+## PanomiX Documentation
+The panomiX toolbox is developed using Shiny, a web application framework for R that allows for interactive data analysis and visualization. This interactive web-based platform allows to effortlessly analyze complex biological data across different omics layers, such as genomics, transcriptomics, proteomics, metabolomics, and phenomics.
+To ensure accessibility, panomiX is hosted on Shinyapps.io, a cloud-based hosting service for Shiny applications. This allows users to access the platform from anywhere without requiring additional infrastructure. Cloud deployment eliminates the need to manage local servers, providing a smoother user experience and easier maintenance.
 
 This application enables users to build a predictive model using the XGBoost package and the caret package. It provides functionality to fine-tune the XGBoost model and select the optimal configuration through cross-validation, specifically employing a cross-validation approach. Information about XGBoost <a href="https://xgboost.readthedocs.io/en/latest//">here</a>
-
-# PanomiX Documentation
 
 ## Data Input
 
