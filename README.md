@@ -2,8 +2,6 @@
 The panomiX toolbox is developed using Shiny, a web application framework for R that allows for interactive data analysis and visualization. This interactive web-based platform allows to effortlessly analyze complex biological data across different omics layers, such as genomics, transcriptomics, proteomics, metabolomics, and phenomics.
 To ensure accessibility, panomiX is hosted on Shinyapps.io, a cloud-based hosting service for Shiny applications. This allows users to access the platform from anywhere without requiring additional infrastructure. Cloud deployment eliminates the need to manage local servers, providing a smoother user experience and easier maintenance.
 
-This application enables users to build a predictive model using the XGBoost package and the caret package. It provides functionality to fine-tune the XGBoost model and select the optimal configuration through cross-validation, specifically employing a cross-validation approach. Information about XGBoost <a href="https://xgboost.readthedocs.io/en/latest//">here</a>
-
 ## Data Input
 
 ### Accepted Data Formats
@@ -65,7 +63,7 @@ Before PCA, datasets are standardized to a **unit sum of squares** for uniformit
   - **Experimental conditions** (e.g., condition1 and condition2).
 
 ## Multi-Omics Prediction with XGBoost
-PanomiX leverages **XGBoost** for high-dimensional multi-omics data analysis.
+PanomiX leverages **XGBoost** for high-dimensional multi-omics data analysis. Information about XGBoost <a href="https://xgboost.readthedocs.io/en/latest//">here</a>.
 
 ### Data Splitting Options
 Users can split datasets via:
