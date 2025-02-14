@@ -115,6 +115,6 @@ PanomiX incorporates constraints to align model predictions with biological know
 - **Leverage SHAP-based feature interactions** for deeper insights into biological processes.
 
 ---
-For detailed examples and step-by-step tutorials, visit our [panomiX]([https://szymanskilab.shinyapps.io/panomiX/]).
+For detailed examples and step-by-step tutorials follow our article, and visit our [panomiX](https://szymanskilab.shinyapps.io/panomiX/).
 
 
