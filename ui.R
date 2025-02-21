@@ -44,7 +44,7 @@ shinyUI(navbarPage(
   # UI modules 
   tabPanel("Data Harmonisation", source('ui/ui_harm.R', local=T)[1]),
   tabPanel("Variance Estimation", source('ui/ui_ve.R', local=T)[1]),
-  tabPanel("Multi-omics Prediction", source('ui/ui_xg.R', local=T)[1]),
+  tabPanel("Multi-omics Prediction", source('ui/ui_xg1.R', local=T)[1]),
   tabPanel("Omics Correlation", source('ui/ui_mb.R', local=T)[1]),
   
   tabPanel("Information", 

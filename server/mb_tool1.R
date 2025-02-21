@@ -134,17 +134,26 @@ observeEvent(input$tune_btn, {
     X2 <- scale(t(omics_all3$omicsfile2), center = TRUE, scale = TRUE)
     X3 <- scale(t(omics_all3$omicsfile3), center = TRUE, scale = TRUE)
     
+    X1[is.na(X1) | is.infinite(X1)] <- 0
+    X2[is.na(X2) | is.infinite(X2)] <- 0
+    X3[is.na(X3) | is.infinite(X3)] <- 0
+    
+    #folds_num <- min(10, nrow(X1))
+    
     # basic model
     components <- input$component
     
     pls1 <- spls(X1, X3, ncomp = components, mode = 'regression')
     pls2 <- spls(X2, X3, ncomp = components, mode = 'regression')
     
-    perf.pls1 <- perf(pls1, validation = 'Mfold',
-                      folds = 6, progressBar = FALSE, nrepeat = 50, dist = "max.dist") # repeated CV tuning of component count
+    perf.pls1 <- perf(pls1, validation = 'loo') # repeated CV tuning of component count
     
-    perf.pls2 <- perf(pls2, validation = 'Mfold',
-                      folds = 6, progressBar = FALSE, nrepeat = 50, dist = "max.dist")
+    perf.pls2 <- perf(pls2, validation = 'loo')
+    #perf.pls1 <- perf(pls1, validation = 'Mfold',
+              #folds = folds_num, progressBar = FALSE, nrepeat = 5) # repeated CV tuning of component count
+    
+    #perf.pls2 <- perf(pls2, validation = 'Mfold',
+                      #folds = folds_num, progressBar = FALSE, nrepeat = 5)
     
     # latent component 
     l1 = plot(perf.pls1, criterion = 'Q2.total', plot = FALSE)
@@ -167,14 +176,18 @@ observeEvent(input$tune_btn, {
     
     X3 <- scale(t(omics_all$omicsfile2), center = TRUE, scale = TRUE)
     
+    X1[is.na(X1) | is.infinite(X1)] <- 0
+    X3[is.na(X3) | is.infinite(X3)] <- 0
+    
+    #folds_num <- min(10, nrow(X1))
+    
     components <- input$component
     # basic model
     components <- input$component
     
     pls1 <- spls(X1, X3, ncomp = components, mode = 'regression')
     
-    perf.pls1 <- perf(pls1, validation = 'Mfold',
-                      folds = 6, progressBar = FALSE, nrepeat = 50, dist = "max.dist") # repeated CV tuning of component count
+    perf.pls1 <- perf(pls1, validation = 'loo') # repeated CV tuning of component count
     
     # latent component 
     l1 = plot(perf.pls1, criterion = 'Q2.total', plot = FALSE)
@@ -206,7 +219,14 @@ observeEvent(input$run_btn, {
     X2 <- scale(t(omics_all3$omicsfile2), center = TRUE, scale = TRUE)
     X3 <- scale(t(omics_all3$omicsfile3), center = TRUE, scale = TRUE)
     
+    X1[is.na(X1) | is.infinite(X1)] <- 0
+    X2[is.na(X2) | is.infinite(X2)] <- 0
+    X3[is.na(X3) | is.infinite(X3)] <- 0
+    
     X <- list(omics1 = X1, omics2 = X2)
+    
+    folds_num <- min(10, nrow(X1))
+    print(folds_num)
     
     # set range of test values for number of variables to use from X dataframe
     nX1 = ncol(X1)
@@ -223,14 +243,16 @@ observeEvent(input$run_btn, {
     tune.spls1 <- tune.spls(X1, X3, ncomp = mb_components,
                             test.keepX = list.keepX1,
                             test.keepY = list.keepX3,
-                            nrepeat = 5, folds = 6,
+                            validation = 'loo',
+                            #nrepeat = 5, folds = folds_num,
                             mode = 'regression', measure = 'cor')
     
     set.seed(12345)
     tune.spls2 <- tune.spls(X2, X3, ncomp = mb_components,
                             test.keepX = list.keepX2,
                             test.keepY = list.keepX3,
-                            nrepeat = 5, folds = 6,
+                            validation = 'loo',
+                            #nrepeat = 5, folds = folds_num,
                             mode = 'regression', measure = 'cor')
     
     
@@ -476,9 +498,9 @@ output$linearityPlot <- renderPlotly({
     
     # Create a plotly barplot with error bars
     plot <- plot_ly(x = names(parameters), y = parameters, type = 'bar', name = 'Estimates', 
-            error_y = list(type = 'data', symmetric = FALSE,
-                           array = conf_intervals[, "97.5 %"] - parameters,
-                           arrayminus = parameters - conf_intervals[, "2.5 %"])) %>%
+                    error_y = list(type = 'data', symmetric = FALSE,
+                                   array = conf_intervals[, "97.5 %"] - parameters,
+                                   arrayminus = parameters - conf_intervals[, "2.5 %"])) %>%
       layout(title = "Parameter Estimates with 95% Confidence Intervals",
              yaxis = list(title = "Estimates"))
     

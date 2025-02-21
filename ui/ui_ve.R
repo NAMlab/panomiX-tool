@@ -1,6 +1,10 @@
 sidebarLayout(
   sidebarPanel(
     h4("Dataset"),
+    tooltip(
+      bs_icon("info-circle"),
+      "Data imported should be in CSV format. Upload all three omics as three separate files"
+    ),
     fileInput('dh_file1', 'Omics file 1',
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
@@ -13,25 +17,27 @@ sidebarLayout(
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
                          '.csv')),
+    tags$hr(),
     tooltip(
       bs_icon("info-circle"),
-      "Data imported should contain feature and target variable in one file"
+      "Metadata should be imported in CSV format and must contain at least two pieces of information:
+      (1) an ID column that matches the omics data, and (2) if there are two experimental conditions,
+      specify them as 'condition1' and 'condition2'"
     ),
+    fileInput('meta_file', 'Metadata file',
+              accept = c('text/csv', 
+                         'text/comma-separated-values,text/plain', 
+                         '.csv')),
     tags$hr(),
     radioButtons("dh_choosedataset", 
                  "Choose dataset:",
                  c("Example-data", "Upload-data")),
-    tags$hr(),
-    fileInput('meta_file', 'Meta data file',
-              accept = c('text/csv', 
-                         'text/comma-separated-values,text/plain', 
-                         '.csv')),
     
     actionButton("run", "PCA", icon = icon("refresh")),
     actionButton("run_anova", "ANOVA", icon = icon("refresh")),
     tooltip(
       bs_icon("info-circle"),
-      "Click the PCA button to run PCA analysis"
+      "Click the 'PCA' button to run the PCA analysis and the 'ANOVA' button to run the ANOVA analysis"
     )
   ),
   
@@ -60,6 +66,6 @@ sidebarLayout(
              DTOutput("anova_table")
       )
     ),
-    uiOutput("dddownload")
+    uiOutput("pc_download")
   )
 )

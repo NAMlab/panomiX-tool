@@ -10,15 +10,18 @@ library(ggrepel)
 library(irlba)
 library(RColorBrewer)
 library(Boruta)
-library(viridis)
+library(viridis) #new
+library(svglite) #new
+library(gridExtra) #new
+library(baseline) #new
+library(signal) #new
+library(reshape2) #new
 library(dplyr) #new
 
-shinyServer(function(input, output, session) {
-
+shinyServer(function(input, output, session) { 
   # Server modules 
-  source('server/xg_tool5.R', local = TRUE)
-  source('server/mb_tool.R', local = TRUE)
-  source('server/ve_tool1.R', local = TRUE)
-  source('server/harm_tool.R', local = TRUE)
-  
+  source('server/xg_tool8.R', local = TRUE)
+  source('server/mb_tool1.R', local = TRUE)
+  source('server/ve_tool2.R', local = TRUE)
+  source('server/harm_tool1.R', local = TRUE)
 })

@@ -1,6 +1,10 @@
 sidebarLayout(
   sidebarPanel(
     h4("Dataset"),
+    tooltip(
+      bs_icon("info-circle"),
+      "Data imported should be in CSV format. Upload all three omics as three separate files"
+    ),
     fileInput('mb_file1', 'Omics file 1',
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
@@ -13,10 +17,6 @@ sidebarLayout(
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
                          '.csv')),
-    tooltip(
-      bs_icon("info-circle"),
-      "Data imported should contain feature and target variable in one file"
-    ),
     tags$hr(),
     radioButtons("mb_choosedataset", 
                  "Choose dataset:",
@@ -26,7 +26,7 @@ sidebarLayout(
     actionButton("check_btn", "Check", icon = icon("refresh")),
     tooltip(
       bs_icon("info-circle"),
-      "Check for collinearity in three omics"
+      "Check for collinearity in your input dataset, as this method works well with highly collinear data"
     ),
     br(), # Add a line break for spacing
     br(), # Add a line break for spacing

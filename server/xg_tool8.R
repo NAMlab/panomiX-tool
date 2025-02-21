@@ -16,6 +16,7 @@ loadedDataset <- reactive({
   target <- input$selected_target
   datasetSelected <- input$choosedataset
   repSelected <- input$choosereplicate
+  chooseCV <- input$choosecv
   
   if (datasetSelected == "Upload-data") {
     if (repSelected == "Replicate") {
@@ -27,51 +28,106 @@ loadedDataset <- reactive({
           easyClose = TRUE
         ))
         return(NULL)
+      } else {
+        # Check if inFile3 is provided
+        if (is.null(inFile3)) {
+          # Read the files and process them for replication
+          feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
+          #feature_file1 <- round(feature_file1, 3)
+          feature_file1 <- as.data.frame(t(feature_file1))
+          target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
+          target_file2 <- as.data.frame(t(target_file2))
+          target_file5 <- target_file2[, c(target), drop = FALSE]
+          
+          meta <- read.csv(inFile4$datapath, row.names = 1, check.names = FALSE)
+          
+          # Merging the datasets based on common row names
+          merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
+          # Set row names from the 'Row.names' column
+          rownames(merged_data) <- merged_data$Row.names
+          merged_data <- subset(merged_data, select = -`Row.names`)
+          
+          # Generate new names
+          unique_times <- unique(meta$Time)
+          time_dict <- list()
+          for (time in unique_times) {
+            time_dict[[time]] <- c()
+          }
+          
+          counter <- setNames(rep(1, length(unique_times)), unique_times)
+          new_names <- c()
+          
+          for (time in meta$Time) {
+            new_name <- paste0("A", counter[time])
+            new_names <- c(new_names, new_name)
+            counter[time] <- counter[time] + 1
+          }
+          
+          # Add new column to DataFrame
+          meta$Group <- new_names
+          
+          # Filter rows where condition
+          meta <- subset(meta, Condition == "Treatment")
+          # Merging the datasets based on common row names
+          merged_data <- merge(merged_data, meta, by = "row.names", all = FALSE)
+          
+          data <- subset(merged_data, select = -c(`Row.names`, `Time`, `Date`, `Condition`))
+          
+          return(data) # Return the merged data frame
+        } else { 
+          # Read the files and process them for replication
+          feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
+          #feature_file1 <- round(feature_file1, 3)
+          feature_file1 <- as.data.frame(t(feature_file1))
+          feature_file3 <- read.csv(inFile3$datapath, row.names = 1, check.names = FALSE)
+          feature_file3 <- as.data.frame(t(feature_file3))
+          # Merging the datasets based on common row names
+          feature_file1 <- merge(feature_file3, feature_file1, by = "row.names", all = FALSE)
+          # Set row names from the 'Row.names' column
+          rownames(feature_file1) <- feature_file1$Row.names
+          feature_file1 <- subset(feature_file1, select = -`Row.names`)
+          
+          target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
+          target_file2 <- as.data.frame(t(target_file2))
+          target_file5 <- target_file2[, c(target), drop = FALSE]
+          
+          meta <- read.csv(inFile4$datapath, row.names = 1, check.names = FALSE)
+          
+          # Merging the datasets based on common row names
+          merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
+          # Set row names from the 'Row.names' column
+          rownames(merged_data) <- merged_data$Row.names
+          merged_data <- subset(merged_data, select = -`Row.names`)
+          
+          # Generate new names
+          unique_times <- unique(meta$Time)
+          time_dict <- list()
+          for (time in unique_times) {
+            time_dict[[time]] <- c()
+          }
+          
+          counter <- setNames(rep(1, length(unique_times)), unique_times)
+          new_names <- c()
+          
+          for (time in meta$Time) {
+            new_name <- paste0("A", counter[time])
+            new_names <- c(new_names, new_name)
+            counter[time] <- counter[time] + 1
+          }
+          
+          # Add new column to DataFrame
+          meta$Group <- new_names
+          
+          # Filter rows where condition
+          meta <- subset(meta, Condition == "Treatment")
+          # Merging the datasets based on common row names
+          merged_data <- merge(merged_data, meta, by = "row.names", all = FALSE)
+          
+          data <- subset(merged_data, select = -c(`Row.names`, `Time`, `Date`, `Condition`))
+          
+          return(data) # Return the merged data frame
+        }
       }
-      
-      # Read the files and process them for replication
-      feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
-      #feature_file1 <- round(feature_file1, 3)
-      feature_file1 <- as.data.frame(t(feature_file1))
-      target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
-      target_file2 <- as.data.frame(t(target_file2))
-      target_file5 <- target_file2[, c(target), drop = FALSE]
-      
-      meta <- read.csv(inFile4$datapath, row.names = 1, check.names = FALSE)
-      
-      # Merging the datasets based on common row names
-      merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
-      # Set row names from the 'Row.names' column
-      rownames(merged_data) <- merged_data$Row.names
-      merged_data <- subset(merged_data, select = -`Row.names`)
-      
-      # Generate new names
-      unique_times <- unique(meta$Time)
-      time_dict <- list()
-      for (time in unique_times) {
-        time_dict[[time]] <- c()
-      }
-      
-      counter <- setNames(rep(1, length(unique_times)), unique_times)
-      new_names <- c()
-      
-      for (time in meta$Time) {
-        new_name <- paste0("A", counter[time])
-        new_names <- c(new_names, new_name)
-        counter[time] <- counter[time] + 1
-      }
-      
-      # Add new column to DataFrame
-      meta$Group <- new_names
-      
-      # Filter rows where condition
-      meta <- subset(meta, Condition == "Control")
-      # Merging the datasets based on common row names
-      merged_data <- merge(merged_data, meta, by = "row.names", all = FALSE)
-      
-      data <- subset(merged_data, select = -c(`Row.names`, `Time`, `Date`, `Condition`))
-      
-      return(data) # Return the merged data frame
     } else {
       # Check if both files are provided for non-replicate "Upload-data"
       if (is.null(inFile1) || is.null(inFile2)) {
@@ -81,21 +137,46 @@ loadedDataset <- reactive({
           easyClose = TRUE
         ))
         return(NULL) # Return NULL to signify that the dataset is not loaded
+      } else {
+        # Check if harmfile3 is provided
+        if (is.null(inFile3)) {
+          # Read both files and process them for non-replicate case
+          feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
+          #feature_file1 <- round(feature_file1, 3)
+          feature_file1 <- as.data.frame(t(feature_file1))
+          target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
+          target_file2 <- as.data.frame(t(target_file2))
+          target_file5 <- target_file2[, c(target), drop = FALSE]
+          
+          # Merging the datasets based on common row names
+          merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
+          data <- subset(merged_data, select = -`Row.names`)
+          
+          return(data) # Return the merged data frame
+        } else {
+          # Read both files and process them for non-replicate case
+          feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
+          #feature_file1 <- round(feature_file1, 3)
+          feature_file1 <- as.data.frame(t(feature_file1))
+          feature_file3 <- read.csv(inFile3$datapath, row.names = 1, check.names = FALSE)
+          feature_file3 <- as.data.frame(t(feature_file3))
+          # Merging the datasets based on common row names
+          feature_file1 <- merge(feature_file3, feature_file1, by = "row.names", all = FALSE)
+          # Set row names from the 'Row.names' column
+          rownames(feature_file1) <- feature_file1$Row.names
+          feature_file1 <- subset(feature_file1, select = -`Row.names`)
+          
+          target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
+          target_file2 <- as.data.frame(t(target_file2))
+          target_file5 <- target_file2[, c(target), drop = FALSE]
+          
+          # Merging the datasets based on common row names
+          merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
+          data <- subset(merged_data, select = -`Row.names`)
+          
+          return(data) # Return the merged data frame
+        }
       }
-      
-      # Read both files and process them for non-replicate case
-      feature_file1 <- read.csv(inFile1$datapath, row.names = 1, check.names = FALSE)
-      #feature_file1 <- round(feature_file1, 3)
-      feature_file1 <- as.data.frame(t(feature_file1))
-      target_file2 <- read.csv(inFile2$datapath, row.names = 1, check.names = FALSE)
-      target_file2 <- as.data.frame(t(target_file2))
-      target_file5 <- target_file2[, c(target), drop = FALSE]
-      
-      # Merging the datasets based on common row names
-      merged_data <- merge(feature_file1, target_file5, by = "row.names", all = FALSE)
-      data <- subset(merged_data, select = -`Row.names`)
-      
-      return(data) # Return the merged data frame
     }
   } else if (datasetSelected == "Example-data") {
     # Return the example dataset
@@ -110,7 +191,8 @@ trainXGB <- function (data,
                       nrounds, 
                       max_depth,
                       cv,
-                      p) {
+                      p,
+                      chooseCV) {
   
   # Create an index for splitting
   #index <- createDataPartition(data$target, p = 0.8, list = FALSE)
@@ -158,28 +240,31 @@ trainXGB <- function (data,
   ## Model selection using CV
   ##Search Grid
   
-  hyper_grid <- expand.grid(
-    max_depth = max_depth,
-    nrounds = nrounds,
-    eta = seq(0.1, 1, by = 0.1),
-    gamma = seq(0, 0.6, by = 0.2),
-    colsample_bytree = seq(0.8, 1, by = 0.1),
-    min_child_weight = c(1, 5),
-    subsample = c(0.7, 0.8)
-  )
-  
   #hyper_grid <- expand.grid(
-  #max_depth = seq(3, 5, by = 1),
-  #nrounds = 50,
-  #eta = seq(0.1, 1, by = 0.2),  # Reduced granularity
-  #gamma = seq(0, 0.6, by = 0.3),  # Reduced granularity
-  #colsample_bytree = c(0.5, 0.8),  # Reduced granularity
+  #max_depth = max_depth,
+  #nrounds = nrounds,
+  #eta = seq(0.1, 1, by = 0.1),
+  #gamma = seq(0, 0.6, by = 0.2),
+  #colsample_bytree = seq(0.8, 1, by = 0.1),
   #min_child_weight = c(1, 5),
-  #subsample = c(0.5, 0.8)
+  #subsample = c(0.7, 0.8)
   #)
   
-  #ctrl <- trainControl(method = "cv", number = cv)
-  ctrl <- trainControl(method = "LOOCV")
+  hyper_grid <- expand.grid(
+    max_depth = seq(3, 5, by = 1),
+    nrounds = 50,
+    eta = seq(0.1, 1, by = 0.2),  # Reduced granularity
+    gamma = seq(0, 0.6, by = 0.3),  # Reduced granularity
+    colsample_bytree = c(0.5, 0.8),  # Reduced granularity
+    min_child_weight = c(1, 5),
+    subsample = c(0.5, 0.8)
+  )
+  
+  if (chooseCV == "CV") {
+    ctrl <- trainControl(method = "cv", number = cv)
+  } else {
+    ctrl <- trainControl(method = "LOOCV")  # Fix: should be "LOO" instead of "LOOCV"
+  }
   
   xgb_train <- train(
     train_scaled, #change
@@ -236,7 +321,8 @@ trainXGB_rep <- function (data,
                           nrounds, 
                           max_depth,
                           cv,
-                          p) {
+                          p,
+                          chooseCV) {
   
   # Seeds for different splits
   seeds <- c(012, 123, 456, 789)
@@ -310,28 +396,31 @@ trainXGB_rep <- function (data,
     
     ## Model selection using CV
     ##Search Grid
-    hyper_grid <- expand.grid(
-      max_depth = max_depth,
-      nrounds = nrounds,
-      eta = seq(0.1, 1, by = 0.1),
-      gamma = seq(0, 0.6, by = 0.2),
-      colsample_bytree = seq(0.8, 1, by = 0.1),
-      min_child_weight = c(1, 5),
-      subsample = c(0.7, 0.8)
-    )
-    
     #hyper_grid <- expand.grid(
-    #max_depth = seq(3, 5, by = 1),
-    #nrounds = 50,
-    #eta = seq(0.1, 1, by = 0.2),  # Reduced granularity
-    #gamma = seq(0, 0.6, by = 0.3),  # Reduced granularity
-    #colsample_bytree = c(0.5, 0.8),  # Reduced granularity
+    #max_depth = max_depth,
+    #nrounds = nrounds,
+    #eta = seq(0.1, 1, by = 0.1),
+    #gamma = seq(0, 0.6, by = 0.2),
+    #colsample_bytree = seq(0.8, 1, by = 0.1),
     #min_child_weight = c(1, 5),
-    #subsample = c(0.5, 0.8)
+    #subsample = c(0.7, 0.8)
     #)
     
-    ctrl <- trainControl(method = "cv", number = cv)
-    #ctrl <- trainControl(method = "LOOCV")
+    hyper_grid <- expand.grid(
+      max_depth = seq(3, 5, by = 1),
+      nrounds = 50,
+      eta = seq(0.1, 1, by = 0.2),  # Reduced granularity
+      gamma = seq(0, 0.6, by = 0.3),  # Reduced granularity
+      colsample_bytree = c(0.5, 0.8),  # Reduced granularity
+      min_child_weight = c(1, 5),
+      subsample = c(0.5, 0.8)
+    )
+    
+    if (chooseCV == "CV") {
+      ctrl <- trainControl(method = "cv", number = cv)
+    } else {
+      ctrl <- trainControl(method = "LOOCV")  # Fix: should be "LOO" instead of "LOOCV"
+    }
     
     xgb_train <- train(
       train_scaled, #change
@@ -394,8 +483,8 @@ trainXGB_rep <- function (data,
       best_split_index <- i
     }
   }
-  
-  # Use the best split's parameters and train/test data for Boruta
+  print(best_split_index)
+  # Use the best split's parameters and train/test data for Boruta and contraints
   best_params <- best_params_all[[best_split_index]]
   train_data <- train_data_all[[best_split_index]]
   test_data <- test_data_all[[best_split_index]]
@@ -489,21 +578,22 @@ observeEvent(input$optimize_btn, {
   
   datasetSelected <- input$choosedataset
   repSelected <- input$choosereplicate
+  chooseCV <- input$choosecv
   
   # Start optimization process based on dataset and replicate selection
   if (datasetSelected == "Upload-data") {
     if (repSelected == "Replicate") {
       # Replicate case for Upload-data
-      xgb_model_optimized <- trainXGB_rep(loadedDataset(), target, nrounds, max_depth, 3, p)
+      xgb_model_optimized <- trainXGB_rep(loadedDataset(), target, nrounds, max_depth, 3, p, chooseCV)
       #xgb_model_optimized(model)  # Store the result in the reactive value
     } else {
       # Non-replicate case for Upload-data
-      xgb_model_optimized <- trainXGB(loadedDataset(), target, nrounds, max_depth, 3, p)
+      xgb_model_optimized <- trainXGB(loadedDataset(), target, nrounds, max_depth, 3, p, chooseCV)
       #xgb_model_optimized(model)  # Store the result in the reactive value
     }
   } else if (datasetSelected == "Example-data") {
     # Example-data case
-    xgb_model_optimized <- trainXGB(loadedDataset(), target, nrounds, max_depth, 3, p)
+    xgb_model_optimized <- trainXGB(loadedDataset(), target, nrounds, max_depth, 3, p, chooseCV)
     #xgb_model_optimized(model)  # Store the result in the reactive value
   }
   
@@ -577,7 +667,8 @@ output$shap_plot <- renderPlotly({
       # Convert test_data to matrix
       stest_data <- as.matrix(stest_data)
       contr <- predict(my_model, stest_data, predcontrib = TRUE)
-      xgb.ggplot.shap.summary(stest_data, contr, model = my_model)
+      shap_plot_title <- xgb.ggplot.shap.summary(stest_data, contr, model = my_model)
+      shap_plot_title + ggtitle("SHAP Features")
     } else {
       output$error_notification <- renderUI({
         tagList(
@@ -670,7 +761,8 @@ output$boruta_plot <- renderPlotly({
       
       b_shap_values$prediction <- boruta_predictions
       
-      xgb.ggplot.shap.summary(as.matrix(X_test_boruta), contr, model = xgb_boruta_model) #change
+      boruta_plot_title <- xgb.ggplot.shap.summary(as.matrix(X_test_boruta), contr, model = xgb_boruta_model) #change
+      boruta_plot_title + ggtitle("Boruta-SHAP Features")
       
     } else {
       output$error_notification <- renderUI({
@@ -696,10 +788,6 @@ output$interaction_plot <- renderPlotly({
       test_data = xgb_all$test_data
       target <- input$selected_target
       
-      #change
-      # Extract the target variable
-      y_train <- train_data[[target]]
-      y_test <- test_data[[target]]
       
       #scale it
       target_index <- which(names(train_data) == target)
@@ -721,10 +809,7 @@ output$interaction_plot <- renderPlotly({
       test_scaled <- as.data.frame(test_scaled) %>%
         mutate(across(everything(), ~ replace(., is.na(.) | is.infinite(.), 0)))
       
-      train_data = train_scaled 
-      test_data = test_scaled #change
-      
-      test_s<- xgb_all$test
+      test_s <- xgb_all$test
       # Convert test_data to matrix
       test_s <- as.matrix(test_s)
       contr <- predict(my_model, test_s, predcontrib = TRUE)
@@ -744,7 +829,7 @@ output$interaction_plot <- renderPlotly({
       
       # Filter and summarize associations by feature
       conlist_summary <- conlist_association %>%
-        filter(!is.na(association)) %>% # Exclude rows with NA in association
+        dplyr::filter(!is.na(association)) %>% # Exclude rows with NA in association
         group_by(feature) %>%
         summarise(
           final_association = case_when(
@@ -753,40 +838,74 @@ output$interaction_plot <- renderPlotly({
             TRUE ~ 0                         # Optional: for features not meeting the above (default to 0)
           )
         )
-      conlist1 <- conlist_summary[,c("feature"), drop = FALSE]
+      conlist1 <- conlist_summary
       
-      conlist2 <- read.csv(inFile5$datapath, sep = ";", check.names = FALSE)
-      conlist2 <- conlist2[,c("feature"), drop = FALSE]
+      conlist2 <- read.csv(inFile5$datapath, row.names = 1, check.names = FALSE)
+      #conlist2 <- conlist2[,c("feature"), drop = FALSE]
       
       # Combine the data frames
       conlist3 <- rbind(conlist1, conlist2)
       conlist3 <- unique(conlist3)
+      # Convert 'feature' in conlist3 to character first
+      conlist3 <- conlist3 %>%
+        mutate(feature = as.character(feature))
       
       # Extract the features from conlist3
       features_to_keep <- conlist3$feature
       
       # Subset the train and test data to only keep these features
-      X_train_data <- train_data[, features_to_keep, drop = FALSE]
-      X_test_data <- test_data[, features_to_keep, drop = FALSE]
+      X_train_data <- train_scaled[, features_to_keep, drop = FALSE]
+      X_test_data <- test_scaled[, features_to_keep, drop = FALSE]
       
       # Create the xgb.DMatrix objects, excluding the target column
-      dtrain_con <- xgb.DMatrix(data = as.matrix(X_train_data), label = y_train)
-      dtest_con <- xgb.DMatrix(data = as.matrix(X_test_data), label = y_test)
+      dtrain_con <- xgb.DMatrix(data = as.matrix(X_train_data), label = train_data[[target]])
+      dtest_con <- xgb.DMatrix(data = as.matrix(X_test_data), label = test_data[[target]])
       
-      xgb_model_con <- xgboost(data = dtrain_con,
-                               max.depth = best_params$max_depth,
-                               nrounds = best_params$nrounds,
-                               eta = best_params$eta,
-                               gamma = best_params$gamma,
-                               colsample_bytree = best_params$colsample_bytree,
-                               min_child_weight = best_params$min_child_weight,
-                               subsample = best_params$subsample,
-                               objective = "reg:squarederror",
-                               eval_metric = "rmse")
+      seeds <- c(012, 123, 456, 789)
+      
+      # Initialize variables to store the best model and its performance
+      best_r_squared <- -Inf
+      best_ran_model <- NULL
+      
+      # Loop through each seed
+      for (seed in seeds) {
+        set.seed(seed)
+        
+        # Train the XGBoost model
+        xgb_model_con <- xgboost(data = dtrain_con,
+                                 max.depth = best_params$max_depth,
+                                 nrounds = best_params$nrounds,
+                                 eta = best_params$eta,
+                                 gamma = best_params$gamma,
+                                 colsample_bytree = best_params$colsample_bytree,
+                                 min_child_weight = best_params$min_child_weight,
+                                 subsample = best_params$subsample,
+                                 objective = "reg:squarederror",
+                                 eval_metric = "rmse")
+        
+        # Make predictions
+        mono_predictions <- predict(xgb_model_con, dtest_con)
+        y_test <- test_data[[target]]
+        
+        RSQUARE = function(y_actual,y_predict){
+          cor(y_actual,y_predict)^2
+        }
+        
+        # Calculate R-squared
+        r_squared <- RSQUARE(y_test, mono_predictions)
+        print(r_squared)
+        # Check if this model is the best so far
+        if (r_squared > best_r_squared) {
+          best_r_squared <- r_squared
+          best_ran_model <- xgb_model_con
+        }
+      }
       
       # Compute SHAP values and save the SHAP summary plot
-      contr_con <- predict(xgb_model_con, as.matrix(X_test_data), predcontrib = TRUE)
-      xgb.ggplot.shap.summary(as.matrix(X_test_data), contr_con, model = xgb_model_con)
+      contr_con <- predict(best_ran_model, as.matrix(X_test_data), predcontrib = TRUE)
+      ran_plot_title <- xgb.ggplot.shap.summary(as.matrix(X_test_data), contr_con, model = best_ran_model)
+      # Add a title to the SHAP plot
+      ran_plot_title + ggtitle("Random Interacting Features")
       
     } else if (conSelected == "Monotonic") {
       my_model <- xgb_all$model
@@ -803,26 +922,6 @@ output$interaction_plot <- renderPlotly({
       #scale it
       target_index <- which(names(train_data) == target)
       
-      train_scaled <- scale(train_data[, -target_index])  # Scaling only absorbance columns
-      
-      # Fit scaling parameters from the training data
-      scaling_params <- attr(train_scaled, "scaled:scale")
-      scaling_means <- attr(train_scaled, "scaled:center")
-      
-      # Replace NaN and Inf with 0 using mutate_all
-      train_scaled <- as.data.frame(train_scaled) %>%
-        mutate(across(everything(), ~ replace(., is.na(.) | is.infinite(.), 0)))
-      
-      # Scale the test data using the training parameters
-      test_scaled <- scale(test_data[, -target_index], center = scaling_means, scale = scaling_params)
-      
-      # Replace NaN and Inf with 0 using mutate_all
-      test_scaled <- as.data.frame(test_scaled) %>%
-        mutate(across(everything(), ~ replace(., is.na(.) | is.infinite(.), 0)))
-      
-      train_data = train_scaled 
-      test_data = test_scaled #change
-      
       test_s<- xgb_all$test
       # Convert test_data to matrix
       test_s <- as.matrix(test_s)
@@ -843,7 +942,7 @@ output$interaction_plot <- renderPlotly({
       
       # Filter and summarize associations by feature
       conlist_summary <- conlist_association %>%
-        filter(!is.na(association)) %>% # Exclude rows with NA in association
+        dplyr::filter(!is.na(association)) %>% # Exclude rows with NA in association
         group_by(feature) %>%
         summarise(
           final_association = case_when(
@@ -853,7 +952,8 @@ output$interaction_plot <- renderPlotly({
           )
         )
       conlist1 <- conlist_summary #monotone
-      conlist2 <- read.csv(inFile5$datapath, sep = ";", check.names = FALSE)
+      
+      conlist2 <- read.csv(inFile5$datapath, row.names = 1, check.names = FALSE)
       
       # Combine the data frames
       conlist3 <- rbind(conlist1, conlist2)
@@ -877,7 +977,7 @@ output$interaction_plot <- renderPlotly({
       # Only keep rows in conlist3 where features are in features_to_keep
       # Now filter rows based on 'features_to_keep' and sort by 'feature'
       trimmed_conlist3 <- conlist3 %>%
-        filter(feature %in% features_to_keep) %>%  # Keep only rows where 'feature' is in 'features_to_keep'
+        dplyr::filter(feature %in% features_to_keep) %>%  # Keep only rows where 'feature' is in 'features_to_keep'
         arrange(feature)  # Sort by 'feature' from smallest to largest
       
       # Extract the features from conlist3
@@ -893,30 +993,79 @@ output$interaction_plot <- renderPlotly({
       X_train_data <- train_data[, features_to_keep, drop = FALSE]
       X_test_data <- test_data[, features_to_keep, drop = FALSE]
       
+      #scale it
+      train_scaled <- scale(X_train_data)  # Scaling only absorbance columns
+      
+      # Fit scaling parameters from the training data
+      scaling_params <- attr(train_scaled, "scaled:scale")
+      scaling_means <- attr(train_scaled, "scaled:center")
+      
+      # Replace NaN and Inf with 0 using mutate_all
+      train_scaled <- as.data.frame(train_scaled) %>%
+        mutate(across(everything(), ~ replace(., is.na(.) | is.infinite(.), 0)))
+      
+      # Scale the test data using the training parameters
+      test_scaled <- scale(X_test_data, center = scaling_means, scale = scaling_params)
+      
+      # Replace NaN and Inf with 0 using mutate_all
+      test_scaled <- as.data.frame(test_scaled) %>%
+        mutate(across(everything(), ~ replace(., is.na(.) | is.infinite(.), 0)))
+      
       # Step 6: Validate alignment
       if (length(aligned_constraints) != ncol(X_train_data)) {
         stop("Mismatch between monotone constraints and training data features.")
       }
       
       # Create the xgb.DMatrix objects, excluding the target column
-      dtrain_con <- xgb.DMatrix(data = as.matrix(X_train_data), label = y_train)
-      dtest_con <- xgb.DMatrix(data = as.matrix(X_test_data), label = y_test)
+      dtrain_con <- xgb.DMatrix(data = as.matrix(train_scaled), label = train_data[[target]])
+      dtest_con <- xgb.DMatrix(data = as.matrix(test_scaled), label = test_data[[target]])
       
-      xgb_model_con <- xgboost(data = dtrain_con,
-                               max.depth = best_params$max_depth,
-                               nrounds = best_params$nrounds,
-                               eta = best_params$eta,
-                               gamma = best_params$gamma,
-                               colsample_bytree = best_params$colsample_bytree,
-                               min_child_weight = best_params$min_child_weight,
-                               subsample = best_params$subsample,
-                               monotone_constraints = monotone_constraints,
-                               objective = "reg:squarederror",
-                               eval_metric = "rmse")
+      seeds <- c(012, 123, 456, 789)
+      
+      # Initialize variables to store the best model and its performance
+      best_r_squared <- -Inf
+      best_mono_model <- NULL
+      
+      # Loop through each seed
+      for (seed in seeds) {
+        set.seed(seed)
+        
+        # Train the XGBoost model
+        xgb_model_con <- xgboost(data = dtrain_con,
+                                 max.depth = best_params$max_depth,
+                                 nrounds = best_params$nrounds,
+                                 eta = best_params$eta,
+                                 gamma = best_params$gamma,
+                                 colsample_bytree = best_params$colsample_bytree,
+                                 min_child_weight = best_params$min_child_weight,
+                                 subsample = best_params$subsample,
+                                 monotone_constraints = monotone_constraints,
+                                 objective = "reg:squarederror",
+                                 eval_metric = "rmse")
+        
+        # Make predictions
+        mono_predictions <- predict(xgb_model_con, dtest_con)
+        y_test <- test_data[[target]]
+        
+        RSQUARE = function(y_actual,y_predict){
+          cor(y_actual,y_predict)^2
+        }
+        
+        # Calculate R-squared
+        r_squared <- RSQUARE(y_test, mono_predictions)
+        print(r_squared)
+        # Check if this model is the best so far
+        if (r_squared > best_r_squared) {
+          best_r_squared <- r_squared
+          best_mono_model <- xgb_model_con
+        }
+      }
       
       # Compute SHAP values and save the SHAP summary plot
-      contr_con <- predict(xgb_model_con, as.matrix(X_test_data), predcontrib = TRUE)
-      xgb.ggplot.shap.summary(as.matrix(X_test_data), contr_con, model = xgb_model_con)
+      contr_con <- predict(best_mono_model, as.matrix(test_scaled), predcontrib = TRUE)
+      mono_plot_title <- xgb.ggplot.shap.summary(as.matrix(test_scaled), contr_con, model = best_mono_model)
+      # Add a title to the SHAP plot
+      mono_plot_title + ggtitle("Monotonic Interacting Features")
       
     } else {
       output$error_notification <- renderUI({
