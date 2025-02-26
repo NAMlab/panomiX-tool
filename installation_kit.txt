@@ -1,0 +1,35 @@
+Packages required for panomiX desktop installation:
+1. A vector pkgs with package names and their versions.
+2. Loops through each package, splitting the name and version.
+3. Uses remotes::install_version() for installing specific versions.
+4. Uses install.packages() for the latest version if no version is specified.
+
+pkgs <- c("shiny=1.9.1", "caret=6.0-94", "xgboost=1.7.8.1", "ggplot2=3.5.1", 
+          "plotly=4.10.4", "shinycssloaders=1.1.0", "mixOmics=6.28.0", "tibble=3.2.1", 
+          "ggrepel=0.9.5", "irlba=2.3.5.1", "RColorBrewer=1.1-3", "Boruta=8.0.0", 
+          "viridis=0.6.5", "dplyr=1.1.4", "DT=0.33", "bslib=0.8.0", "bsicons=0.1.2", 
+          "shinyjs=2.1.0", "markdown=1.13", "tidyr=1.3.1", "svglite=2.1.3", 
+          "gridExtra=2.3", "baseline=1.3-5", "signal=1.8-1", "reshape2=1.4.4")
+
+install_pkg <- function(pkg) {
+  parts <- strsplit(pkg, "=")[[1]]
+  pkg_name <- parts[1]
+  pkg_version <- ifelse(length(parts) == 2, parts[2], NA)
+  
+  if (!requireNamespace(pkg_name, quietly = TRUE)) {  # Check if package is installed
+    cat(paste0("Installing: ", pkg_name, " ", ifelse(is.na(pkg_version), "", pkg_version), "\n"))
+    tryCatch({
+      if (!is.na(pkg_version)) {
+        remotes::install_version(pkg_name, version = pkg_version, repos = "http://cran.us.r-project.org")
+      } else {
+        install.packages(pkg_name)
+      }
+    }, error = function(e) {
+      cat(paste0("⚠️ Could not install ", pkg_name, ": ", e$message, "\n"))
+    })
+  } else {
+    cat(paste0("✅ Already installed: ", pkg_name, "\n"))
+  }
+}
+
+sapply(pkgs, install_pkg)
