@@ -1,8 +1,6 @@
-Packages required for panomiX desktop installation:
-1. A vector pkgs with package names and their versions.
-2. Loops through each package, splitting the name and version.
-3. Uses remotes::install_version() for installing specific versions.
-4. Uses install.packages() for the latest version if no version is specified.
+Steps to Install Required Packages for PanomiX Desktop:
+1. Ensure the remotes package is installed. RUN install.packages("remotes")
+2. Execute the following loop to install all necessary packages automatically.
 
 pkgs <- c("shiny=1.9.1", "caret=6.0-94", "xgboost=1.7.8.1", "ggplot2=3.5.1", 
           "plotly=4.10.4", "shinycssloaders=1.1.0", "mixOmics=6.28.0", "tibble=3.2.1", 
