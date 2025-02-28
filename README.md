@@ -98,7 +98,7 @@ Data Splitting Options
 Users can split datasets via:
 
 - **Random splitting** (train/test ratio adjustable via a slider in the tool).
-- **Replicate-based splitting** (splits train/test by grouping replicates together so that train and test sets contain all the replicates for maintaining consistency and no information lost).
+- **Replicate-based splitting** (splits train/test by grouping replicates together so that train and test sets contain a shared number of replicates for maintaining consistency and no information lost).
 
 ### Hyperparameter Tuning
 
