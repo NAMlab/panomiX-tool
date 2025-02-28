@@ -76,6 +76,16 @@ PanomiX supports:
 - **Provide metadata** with at least:
   - An **ID column** matching omics data.
   - **Experimental conditions** (e.g., condition1 and condition2).
+ 
+#### Example Metadata
+
+| ID  | condition1 | condition2 |
+|----------|------------|------------|
+| Gene 1   | TH1.1     | Control     |
+| Gene 2   | TH1.2     | Control     |
+| Gene 3   | TH1.3     | Control     |
+| Gene 4   | TH2.1     | Treatment     |
+| Gene 5   | TH2.3     | Treatment     |
 
 ## Multi-Omics Prediction with XGBoost
 
