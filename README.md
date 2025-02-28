@@ -16,12 +16,6 @@ Your data should be structured as a **feature matrix**, where:
 - **Columns** represent biological samples (e.g., individuals or time points)
 - **Rows** represent molecular features (e.g., genes, proteins, metabolites, or spectral variables)
 
-For regression tasks, a **continuous outcome variable (y)** is required. This can be any measurable quantitative trait.
-
-### Uploading Data
-
-PanomiX accepts data files in standard tabular formats such as **CSV**. Ensure that your dataset follows the structure above before uploading.
-
 #### Example Feature Matrix
 
 | Feature  | Sample 1 | Sample 2 | Sample 3 | Sample 4 | Sample 5 |
@@ -32,6 +26,12 @@ PanomiX accepts data files in standard tabular formats such as **CSV**. Ensure t
 | Gene 4   | 4.3     | 5.9     | 6.5     | 7.1     | 3.7     |
 | Gene 5   | 3.6     | 4.2     | 5.4     | 6.8     | 7.9     |
 
+For regression tasks, a **continuous outcome variable (y)** is required. This can be any measurable quantitative trait.
+
+### Uploading Data
+
+PanomiX accepts data files in standard tabular formats such as **CSV**. Ensure that your dataset follows the structure above before uploading.
+
 ## Data Preprocessing and Recommendations
 
 PanomiX can handle large datasets but benefits from preprocessing steps to improve performance:
@@ -39,7 +39,7 @@ PanomiX can handle large datasets but benefits from preprocessing steps to impro
 - **Filter low-variability features** to remove those with minimal variation across samples.
 - **Exclude low-count features** in sequencing data (e.g., RNA-seq), dropping consistently low-count features.
 
-Preprocessing helps reduce dataset size, minimize overfitting, and optimize the efficiency of machine learning models like \*\*XGBoost \*\*which we are using for model prediction.
+Preprocessing helps reduce dataset size, minimize overfitting, and optimize the efficiency of machine learning models like **XGBoost** which we are using for model prediction.
 
 ## Data Harmonization and Scaling
 
@@ -76,7 +76,7 @@ PanomiX supports:
 - **Provide metadata** with at least:
   - An **ID column** matching omics data.
   - **Experimental conditions** (e.g., condition1 and condition2).
- 
+  
 #### Example Metadata
 
 | ID  | condition1 | condition2 |
@@ -89,9 +89,9 @@ PanomiX supports:
 
 ## Multi-Omics Prediction with XGBoost
 
-PanomiX leverages **XGBoost** for high-dimensional multi-omics data analysis. Unlike traditional multivariate dimension reduction techniques, XGBoost focuses on supervised learning, using decision trees as base models, and applying gradient boosting to optimize performance, making it highly suitable for finding relationships between complex datasets. PanomiX uses the following steps to make the model training to minimize loss and improve prediction.
+PanomiX leverages **XGBoost** for high-dimensional multi-omics data analysis. Unlike traditional multivariate dimension reduction techniques, XGBoost focuses on supervised learning, using decision trees as base models, and applying gradient boosting to optimize performance, making it highly suitable for finding relationships between complex datasets. PanomiX uses the following steps to make the mode training to minimize loss and improve prediction.
 
-### Data Splitting Options
+Data Splitting Options
 
 Users can split datasets via:
 
@@ -107,11 +107,12 @@ PanomiX automates tuning using the **caret package**. Key hyperparameters:
 | max_depth              | Tree depth | 3–6 (higher values risk overfitting) |
 | eta                    | Learning rate | 0.1–0.5 (lower rates improve accuracy) |
 | gamma                  | Minimum loss reduction for split | 0.1–0.6 (higher values prevent minor splits) |
-| n_estimators           | Number of boosting rounds | 50–1000 |
+| n_estimators           | Number of boosting rounds | 50–100 |
 | subsample              | Fraction of samples per tree | 0.5–0.8 (reduces overfitting) |
 | colsample_bytree       | Fraction of features per tree | 0.5–1 |
 | alpha, lambda          | Regularization parameters | L1 = 0, L2 = 1 (default) |
 | min_child_weight       | Minimum sum of instance weights in a node | 1–5 (avoids overly specific splits) |
+
 
 ### Feature Importance & SHAP Analysis
 
@@ -131,6 +132,7 @@ PanomiX automates tuning using the **caret package**. Key hyperparameters:
 PanomiX can evaluate interactions between predicted and known features. Users can input a list of known relevant features to assess their contribution to model predictions.
 
 ### Constraint-Based Modeling
+
 - **Random Constraints:** Upload a table with two columns:
   - "feature"
   - "final\_association" (all values set to **0** for unknown relationships).
@@ -138,6 +140,7 @@ PanomiX can evaluate interactions between predicted and known features. Users ca
   - **1** for a known positive relationship.
   - **-1** for a known negative relationship.
   - **0** for unknown relationships.
+
 PanomiX incorporates constraints to align model predictions with biological knowledge.
 
 #### Monotonic Constraints Example Table
@@ -154,7 +157,7 @@ PanomiX incorporates constraints to align model predictions with biological know
 
 - **Use monotonic constraints** when relationships between features and outcomes are known.
 - **Leverage SHAP-based feature interactions** for deeper insights into biological processes.
+
 ---
 For detailed examples and step-by-step tutorials follow our article, and visit our [panomiX](https://szymanskilab.shinyapps.io/panomiX/).
-
 
