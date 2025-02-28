@@ -1,4 +1,6 @@
 # PanomiX Documentation
+The panomiX toolbox is developed using Shiny, a web application framework for R that allows for interactive data analysis and visualization. This interactive web-based platform allows us to effortlessly analyze complex biological data across different omics layers, such as genomics, transcriptomics, proteomics, metabolomics, and phenomics.
+To ensure accessibility, panomiX is hosted on Shinyapps.io, a cloud-based hosting service for Shiny applications. This allows users to access the platform from anywhere without requiring additional infrastructure. Cloud deployment eliminates the need to manage local servers, providing a smoother user experience and easier maintenance.
 
 ## Data Input
 
