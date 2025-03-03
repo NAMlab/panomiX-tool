@@ -125,8 +125,8 @@ PanomiX automates tuning using the **caret package**. Key hyperparameters:
 
 ### Recommendations
 
-- **For datasets with biological replicates, replicate-based splitting is recommended to maintain better splitting of train and test data.**
-- **Use cross-validation (CV) for generalization and with large datasets**; LOOCV is better for small datasets.
+- **For datasets with biological replicates**, replicate-based splitting is recommended to maintain better splitting of train and test data.
+- **Use cross-validation** (CV) for generalization and with large datasets; LOOCV is better for small datasets.
 - **Analyze SHAP values** to interpret key predictors.
 
 ## Multi-Omics Interaction Analysis
