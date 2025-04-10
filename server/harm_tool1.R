@@ -20,7 +20,7 @@ nor_loadedDataset <- reactive({
     data(breast.TCGA)
     X1 <- as.data.frame(t(breast.TCGA$data.train$mirna)[1:150, c(1,2,3,141,142,143)])
     # rename column
-    colnames(X1) <- c("Condition.A1", "Condition.A2", "Condition.A3", "Condition.B1", "Condition.B2", "Condition.B3")
+    colnames(X1) <- c("Sample.A1", "Sample.A2", "Sample.A3", "Sample.B1", "Sample.B2", "Sample.B3")
     return(X1)
   }
 })
@@ -115,7 +115,7 @@ output$original_boxplot <- renderPlot({
     num_cols <- ncol(nor_data_head)
     color_palette <- brewer.pal(min(12, num_cols), "Set3")
     
-    boxplot(nor_data_head, main = "Example Data", col = color_palette)
+    boxplot(nor_data_head, main = "Data Spread", col = color_palette)
   }
 })
 

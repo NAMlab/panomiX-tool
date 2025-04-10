@@ -45,7 +45,7 @@ sidebarLayout(
     actionButton("run_btn", "Run Model", icon = icon("refresh")),
     tooltip(
       bs_icon("info-circle"),
-      "Move the slider to change latent variable and click the tune bottom"
+      "Move the slider to change latent variable and click the tune button"
     )
   ),
   mainPanel(

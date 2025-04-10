@@ -11,6 +11,7 @@ library(tidyr)
 options(shiny.maxRequestSize = 30*1024^2)
 
 shinyUI(navbarPage(
+  id = "navbar",  # 👈 Add this line here
   theme = bs_theme(
     preset = "shiny",
     "primary" = "#0675DD"
@@ -18,7 +19,7 @@ shinyUI(navbarPage(
   lang = "en",
   title = tags$span(
     tags$a(
-      href = "https://github.com/NAMlab",
+      href = "https://github.com/NAMlab/panomiX-tool",
     tags$img(
       src = "logo.png",
       width = "240px",
@@ -34,7 +35,7 @@ shinyUI(navbarPage(
       tags$span(
         bsicons::bs_icon("code-slash"), "Source code"
       ),
-      href = "https://github.com/NAMlab"
+      href = "https://github.com/NAMlab/panomiX-tool"
     )
   ),
   nav_item(
@@ -42,6 +43,7 @@ shinyUI(navbarPage(
   ),
   
   # UI modules 
+  tabPanel("Home", source('ui/ui_home.R', local=T)[1]),
   tabPanel("Data Harmonisation", source('ui/ui_harm.R', local=T)[1]),
   tabPanel("Variance Estimation", source('ui/ui_ve.R', local=T)[1]),
   tabPanel("Multi-omics Prediction", source('ui/ui_xg1.R', local=T)[1]),

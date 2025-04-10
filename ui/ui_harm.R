@@ -8,7 +8,7 @@ sidebarLayout(
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
                          '.csv')),
-    selectInput("type", "Recommended data formate", choices = c("Table", "Abundance_Plot")),
+    selectInput("type", "Data format", choices = c("Table", "Abundance_Plot")),
     tags$hr(),
     radioButtons("nor_choosedataset", 
                  "Choose dataset:",
@@ -17,14 +17,14 @@ sidebarLayout(
     actionButton("ftir_btn", "FTIR normalization", icon = icon("refresh")),
     tooltip(
       bs_icon("info-circle"),
-      "Click the bottom for normalization"
+      "Click the button for normalization"
     )
   ),
   mainPanel(
     conditionalPanel(
       condition = "input.type == 'Table'",
       column(width = 12,
-             h3("Recommended data formate for the panomiX tool"),
+             h3("Data format for panomiX tool"),
              DTOutput("table")
       )
     ),
