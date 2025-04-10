@@ -22,7 +22,7 @@ sidebarLayout(
       It must contain at least two pieces of information: (1) an ID column that matches the omics data,
       and (2) replicate information specific to your experimental conditions"
     ),
-    fileInput('file4', 'Meta data file',
+    fileInput('file4', 'Metadata file',
               accept = c('text/csv', 
                          'text/comma-separated-values,text/plain', 
                          '.csv')),
